@@ -1,5 +1,8 @@
 package com.uexcel.hotelbookingapp.entity;
 
+import org.springframework.stereotype.Component;
+
+
 public enum Status {
     booked,
     available,

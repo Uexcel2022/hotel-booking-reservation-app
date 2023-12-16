@@ -2,17 +2,23 @@ package com.uexcel.hotelbookingapp.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "roomNumber"))
+@Table(uniqueConstraints = @UniqueConstraint(name = "room_number_unique",columnNames = "room_number"))
 @Data
+@NoArgsConstructor
 public class Room {
     @Id
-    @Column(nullable = false)
+    @Column(name="room_number", nullable = false)
     private String roomNumber;
-
     private double amount;
+    private  String status;
 
-    private  Status status;
+    @OneToMany(mappedBy = "room")
+    private List<Booked> booked;
+
 
 }
