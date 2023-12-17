@@ -48,7 +48,7 @@ public class HotelServiceImpl implements HotelService {
         booked.setBookedDate(LocalDate.now());
         booked.setReservationNumber(bookDto.getReservationNumber());
         bookedRepository.save(booked);
-        return "Booking was successfully!!!\n Keep your reservation number: "+ bookDto.getReservationNumber();
+        return "Booking was successfully.\n Keep your reservation number: "+ bookDto.getReservationNumber();
 
     }
 

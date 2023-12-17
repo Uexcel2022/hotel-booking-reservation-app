@@ -24,6 +24,10 @@ public class RoomController {
     @GetMapping("/rooms")
     public String getRoom(Model model){
         List<Room> rooms = hotelService.getAvailableRooms();
+        if(rooms.isEmpty()){
+            model.addAttribute("rooms","There no room is available!!!");
+            return "noRoomAvailable";
+        }
         model.addAttribute("rooms",rooms);
         return "availableRooms";
     }
@@ -43,10 +47,11 @@ public class RoomController {
     @GetMapping("/booking")
     public String getBookingPage(@ModelAttribute("book") BookDto bookDto, @RequestParam("room_no") String string){
         bookDto.setRoomNumber(string);
-        return "BookingPage";
+        return "bookingPage";
     }
     @PostMapping("/booking")
-    public String saveBooking(@ModelAttribute("book") BookDto bookDto, Model model){
+    public String saveBooking(@ModelAttribute("book") BookDto bookDto, Model model,@RequestParam("room_no") String string){
+        bookDto.setRoomNumber(string);
        String message= hotelService.saveBooking(bookDto);
        if(!message.contains("reservation")) {
            model.addAttribute("error", message);

@@ -29,6 +29,10 @@
             color: #0e2433;
         }
 
+        p {
+            color: rgba(84, 86, 86, 0.83);
+        }
+
         label {
             display: block;
             margin: 10px 0 5px;
@@ -36,6 +40,7 @@
             font-weight: bold;
             text-align: left;
         }
+
 
         input {
             width: 100%;
@@ -80,11 +85,11 @@
     <div class="message success" th:if="${success != null}">[[${success}]]</div>
 <!--    <div class="message error" style="display: none;">Registration failed. Please try again.</div>-->
     <h2>BooKing</h2>
-    <form method="post" role="form" th:action="@{/booking}" th:object="${book}">
-        <label for="room_number">Room Number:</label>
-        <input th:field="*{roomNumber}" type="text" id="room_number" name="roomNumber">
+    <form method="post" role="form" th:action="@{/booking(room_no=${book.roomNumber})}" th:object="${book}">
 
-        <label for="firstName">AFirst name</label>
+       <p th:text="${'Room number: '+book.roomNumber}"></p>
+
+        <label for="firstName">First name</label>
         <input th:field="*{firstName}"  type="text" id="firstName" name="firstName" required placeholder="First name">
 
         <label for="lastName">Last name:</label>
@@ -93,8 +98,6 @@
         <button type="submit">Book</button>
     </form>
 
-    <div class="message success" style="display: none;">Registration successful!</div>
-    <div class="message error" style="display: none;">Registration failed. Please try again.</div>
 </div>
 
 <script>
