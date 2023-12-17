@@ -55,10 +55,10 @@ public class RoomController {
        String message= hotelService.saveBooking(bookDto);
        if(!message.contains("reservation")) {
            model.addAttribute("error", message);
-           return "BookingPage";
+           return "bookingPage";
        }
         model.addAttribute("success", message);
-       return "BookingPage";
+       return "bookingPage";
     }
 
 }
