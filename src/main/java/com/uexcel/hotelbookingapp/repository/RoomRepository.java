@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface RoomRepository extends JpaRepository<Room,String> {
 
-    @Query(value ="SELECT * FROM Room  WHERE status = 'available'",
+    @Query(value ="SELECT * FROM Room",
              nativeQuery = true )
     List<Room> fetchAllRoom();
 

@@ -62,9 +62,11 @@ public class HotelServiceImpl implements HotelService {
             return  "Invalid room number!!!";
 
         }
-
-        if(room.getStatus().equals("occupied")){
-            return  "The room is unavailable!!!";
+        Booked obj = bookedRepository.getLastBooking(bookDto.getRoomNumber());
+        System.out.println("************* "+ obj);
+        if(room.getStatus().equals("occupied") && obj != null &&
+                obj.getBookedEndDate().getDayOfYear() > bookDto.getBookedStartDate().getDayOfYear()){
+            return  "Status: failed!!\nThe room is not available for booking on the date(s) you selected!";
             //write fetch the last in date and check if end date is less thank booking start date;
         }
 
@@ -125,6 +127,33 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public Booked getRoom(String reservationNumber) {
         return bookedRepository.findByReservationNumber(reservationNumber);
+    }
+
+    @Override
+    public List<Booked> getAllBookedRoom() {
+        return bookedRepository.findAll();
+    }
+
+    @Override
+    public String deleteReservation(String reservationNumber) {
+        Booked booked = bookedRepository.findByReservationNumber(reservationNumber);
+        if(booked ==null){
+            return "Invalid reservation number";
+        }
+        deleteBookingTracker(booked.getBookedStartDate(), booked.getBookedEndDate(), booked.getRoom().getRoomNumber());
+        bookedRepository.delete(booked);
+        return reservationNumber;
+    }
+
+    private void deleteBookingTracker(LocalDate bookedStartDate, LocalDate bookedEndDate, String roomNumber) {
+        int numberOfDays = bookedEndDate.getDayOfYear() - bookedStartDate.getDayOfYear() +1;
+        for(int i = 0; i < numberOfDays; i++){
+            BookingTrackerIdClass bookingTrackerIdClass = new BookingTrackerIdClass(
+                    LocalDate.now().getYear(), bookedStartDate.getDayOfYear()+i, roomNumber);
+         Optional<BookingTracker> bookingTracker =  bookingTrackerRepository.findById(bookingTrackerIdClass);
+            bookingTracker.ifPresent(bookingTrackerRepository::delete);
+        }
+
     }
 
 

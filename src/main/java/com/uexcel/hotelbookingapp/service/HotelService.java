@@ -16,4 +16,8 @@ public interface HotelService {
     List<Room> getAvailableRooms();
 
     Booked getRoom(String bookedNumber);
+
+    List<Booked> getAllBookedRoom();
+
+    String deleteReservation(String reservationNumber);
 }

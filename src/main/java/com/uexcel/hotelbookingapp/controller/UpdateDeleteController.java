@@ -5,25 +5,28 @@ import com.uexcel.hotelbookingapp.entity.Room;
 import com.uexcel.hotelbookingapp.repository.BookedRepository;
 import com.uexcel.hotelbookingapp.repository.RoomRepository;
 import com.uexcel.hotelbookingapp.service.HotelService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Controller
 public class UpdateDeleteController {
    private final HotelService hotelService;
    private  final BookedRepository bookedRepository;
-   private  final RoomRepository roomepository;
+   private  final RoomRepository roomrepository;
 
     public UpdateDeleteController(HotelService hotelService,
                                   BookedRepository bookedRepository, RoomRepository repository) {
         this.hotelService = hotelService;
         this.bookedRepository = bookedRepository;
-        this.roomepository = repository;
+        this.roomrepository = repository;
     }
 
     @GetMapping("/booked-room")
@@ -42,18 +45,33 @@ public class UpdateDeleteController {
         return "check-reservation";
     }
 
-
     @GetMapping("/checked_in")
     public String checkin(@RequestParam("reservationNumber") String bookedNumber){
 
         Booked booked = hotelService.getRoom(bookedNumber);
-        booked.setChickIn("checkin");
+        booked.setCheckIn("check_in");
         booked.setCheckInDate(LocalDate.now());
 
-        Room room = roomepository.findByRoomNumber(booked.getRoom().getRoomNumber());
+        Room room = roomrepository.findByRoomNumber(booked.getRoom().getRoomNumber());
         room.setStatus("occupied");
         booked.setRoom(room);
         bookedRepository.save(booked);
         return "reservation";
+    }
+
+    @GetMapping("/reservations")
+    public String getReservations(Model model){
+        List<Booked> bookedList = hotelService.getAllBookedRoom();
+        model.addAttribute("bookedInfo",bookedList);
+        return "reservations";
+
+    }
+
+    @GetMapping("/delete")
+    public void deleteReservation(
+            @RequestParam("reservationNumber") String reservationNumber,
+            HttpServletResponse response) throws IOException {
+        hotelService.deleteReservation(reservationNumber);
+        response.sendRedirect("/reservations");
     }
 }

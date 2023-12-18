@@ -16,7 +16,7 @@ public class Booked {
     @Column(nullable = false)
     private String lastName;
     private String reservationNumber;
-    private String chickIn;
+    private String checkIn;
 
     private LocalDate bookedStartDate;
     private LocalDate bookedEndDate;

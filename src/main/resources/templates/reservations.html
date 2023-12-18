@@ -7,11 +7,22 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <title>Delete form</title>
+    <style>
+        span{
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        strong{
+            color: #5b5b0c;
+        }
+    </style>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <h1>Available Rooms</h1>
+        <h1>Reservations</h1>
+        <p>You may wish to delete any record. <strong>NOTE!</strong> <span>Information deleted can never be recovered!!!</span></p>
         <table class="table">
             <thead>
             <tr>
@@ -27,24 +38,23 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
-                <td th:text="${bookedInfo.firstName}"></td>
-                <td th:text="${bookedInfo.lastName}"></td>
-                <td th:text="${bookedInfo.getRoom().roomNumber}"></td>
-                <td th:text="${bookedInfo.bookedDate}"></td>
-                <td th:text="${bookedInfo.bookedStartDate}"></td>
-                <td th:text="${bookedInfo.bookedEndDate}"></td>
-                <td th:text="${bookedInfo.getCheckIn}"></td>
-                <td th:text="${bookedInfo.getCheckInDate()}"></td>
-                <td th:text="${bookedInfo.getCheckOutDate}"></td>
+            <tr th:each="info:${bookedInfo}">
+                <td th:text="${info.firstName}"></td>
+                <td th:text="${info.lastName}"></td>
+                <td th:text="${info.getRoom().roomNumber}"></td>
+                <td th:text="${info.bookedDate}"></td>
+                <td th:text="${info.bookedStartDate}"></td>
+                <td th:text="${info.bookedEndDate}"></td>
+                <td th:text="${info.getCheckIn}"></td>
+                <td th:text="${info.getCheckInDate()}"></td>
+                <td th:text="${info.getCheckOutDate}"></td>
 
                 <td>
 
-                    <a th:href="@{/checked_in(reservationNumber=${bookedInfo.reservationNumber})}"
-                       class="btn btn-primary">Check In</a>
-                    <a th:href="@{/booked-room}" class="btn btn-primary">Cancel</a>
-                    <!--                    <a class="btn btn-danger" th:if="${user.role=='ADMIN'}">Delete</a>-->
-                    <!--                    <a class="btn btn-primary" th:unless="${user.role=='ADMIN'}">View</a>-->
+                    <a th:href="@{/delete(reservationNumber=${info.reservationNumber})}"
+                       class="btn btn-danger">Delete</a>
+                    <a th:href="@{/rooms}" class="btn btn-primary">Cancel</a>
+
                 </td>
             </tr>
             </tbody>
