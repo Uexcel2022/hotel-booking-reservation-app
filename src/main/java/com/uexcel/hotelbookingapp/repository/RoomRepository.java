@@ -12,8 +12,9 @@ public interface RoomRepository extends JpaRepository<Room,String> {
 
     @Query(value ="SELECT * FROM Room  WHERE status = 'available'",
              nativeQuery = true )
-
     List<Room> fetchAllRoom();
 
     Room findByRoomNumber(String string);
+
+
 }

@@ -17,12 +17,13 @@ public class Booked {
     private String lastName;
     private String reservationNumber;
 
-    private LocalDate bookedDate;
+    private LocalDate bookedStartDate;
+    private LocalDate bookedEndDate;
     private LocalDate checkInDate;
     private LocalDate checkedOutDate;
 
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name="room_number",referencedColumnName = "room_number")
     private Room room;
 }

@@ -20,5 +20,12 @@ public class Room {
     @OneToMany(mappedBy = "room")
     private List<Booked> booked;
 
-
+    @Override
+    public String toString() {
+        return "Room{" +
+                "roomNumber='" + roomNumber + '\'' +
+                ", amount=" + amount +
+                ", status='" + status + '\'' +
+                '}';
+    }
 }

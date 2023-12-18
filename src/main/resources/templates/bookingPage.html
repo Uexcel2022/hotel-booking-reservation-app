@@ -89,6 +89,11 @@
 
        <p th:text="${'Room number: '+book.roomNumber}"></p>
 
+        <label for="bookedStartDate">Booked Start Date</label>
+        <input th:field="*{bookedStartDate}"  type="date" id="bookedStartDate" name="bookedStartDate" required>
+        <label for="bookedEndDate">Booked End Date</label>
+        <input th:field="*{bookedEndDate}"  type="date" id="bookedEndDate" name="bookedEndDate" required>
+
         <label for="firstName">First name</label>
         <input th:field="*{firstName}"  type="text" id="firstName" name="firstName" required placeholder="First name">
 

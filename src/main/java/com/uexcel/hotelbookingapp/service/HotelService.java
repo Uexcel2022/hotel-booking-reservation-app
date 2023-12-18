@@ -11,5 +11,6 @@ public interface HotelService {
 
     String saveBooking(BookDto bookDto);
 
+
     List<Room> getAvailableRooms();
 }
