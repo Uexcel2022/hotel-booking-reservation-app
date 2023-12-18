@@ -1,25 +1,16 @@
 package com.uexcel.hotelbookingapp.entity;
 
+import lombok.Getter;
+
 import java.io.Serializable;
 
+@Getter
 public class BookingTrackerIdClass implements Serializable {
     protected int year;
 
     protected  int dayOfYear;
 
     protected String roomNumber;
-
-    public String getRoomNumber() {
-        return roomNumber;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public int getDayOfYear() {
-        return dayOfYear;
-    }
 
     public BookingTrackerIdClass() {
     }

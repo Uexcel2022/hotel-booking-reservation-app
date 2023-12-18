@@ -16,11 +16,13 @@ public class Booked {
     @Column(nullable = false)
     private String lastName;
     private String reservationNumber;
+    private String chickIn;
 
     private LocalDate bookedStartDate;
     private LocalDate bookedEndDate;
     private LocalDate checkInDate;
-    private LocalDate checkedOutDate;
+    private LocalDate checkOutDate;
+    private LocalDate bookedDate;
 
 
     @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)

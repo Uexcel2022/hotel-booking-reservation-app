@@ -15,6 +15,8 @@ public interface BookedRepository extends JpaRepository<Booked,Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM booked WHERE room_number =:roomNumber")
     List<Booked> findByRoomNumber(@Param("roomNumber") String roomNumber);
+
+    Booked findByReservationNumber(String bookedNumber);
 }
 
 //if endDate is below any startDate and the

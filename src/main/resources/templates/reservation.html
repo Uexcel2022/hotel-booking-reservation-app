@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <h1>Available Rooms</h1>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Room Number</th>
+                <th>Booked Date</th>
+                <th>Booked Start Date</th>
+                <th>Booked End Date</th>
+                <th>Check In</th>
+                <th>Checked In Date</th>
+                <th>Checked Out Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${bookedInfo.firstName}"></td>
+                <td th:text="${bookedInfo.lastName}"></td>
+                <td th:text="${bookedInfo.getRoom().roomNumber}"></td>
+                <td th:text="${bookedInfo.bookedDate}"></td>
+                <td th:text="${bookedInfo.bookedStartDate}"></td>
+                <td th:text="${bookedInfo.bookedEndDate}"></td>
+                <td th:text="${bookedInfo.getChickIn}"></td>
+                <td th:text="${bookedInfo.getCheckInDate()}"></td>
+                <td th:text="${bookedInfo.getCheckOutDate}"></td>
+
+                <td>
+
+                    <a th:href="@{/checked_in(reservationNumber=${bookedInfo.reservationNumber})}"
+                       class="btn btn-primary">Check In</a>
+                    <a th:href="@{/booked-room}" class="btn btn-primary">Cancel</a>
+                    <!--                    <a class="btn btn-danger" th:if="${user.role=='ADMIN'}">Delete</a>-->
+                    <!--                    <a class="btn btn-primary" th:unless="${user.role=='ADMIN'}">View</a>-->
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

@@ -41,11 +41,11 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public String saveBooking(BookDto bookDto) {
 
-        if(bookDto.getBookedStartDate().getYear() != LocalDate.now().getYear()){
+        if(bookDto.getBookedStartDate().getYear() < LocalDate.now().getYear()){
             return "Invalid year. The year "+ bookDto.getBookedStartDate().getYear() + " is in the past";
         }
 
-        if(bookDto.getBookedEndDate().getYear() != LocalDate.now().getYear()){
+        if(bookDto.getBookedEndDate().getYear() < LocalDate.now().getYear()){
             return "Invalid year. The year "+ bookDto.getBookedEndDate().getYear() + " is in the past";
         }
 
@@ -53,18 +53,28 @@ public class HotelServiceImpl implements HotelService {
             return "Invalid date: This date "+ bookDto.getBookedStartDate() + " is in the past!";
         }
 
-        if(bookDto.getBookedStartDate().getDayOfYear() > LocalDate.now().getDayOfYear()){
+        if(bookDto.getBookedEndDate().getDayOfYear() < LocalDate.now().getDayOfYear()){
             return "Invalid date: This date "+ bookDto.getBookedEndDate() + " is in the past!";
         }
 
         Room room = roomRepository.findByRoomNumber(bookDto.getRoomNumber());
         if(room == null){
             return  "Invalid room number!!!";
+
         }
 
         if(room.getStatus().equals("occupied")){
             return  "The room is unavailable!!!";
+            //write fetch the last in date and check if end date is less thank booking start date;
         }
+
+        List<BookingTracker> bookingTrackers = bookingTrackerRepository.findAll();
+        for(BookingTracker n: bookingTrackers ){
+            if(LocalDate.now().getDayOfYear() > n.getDayOfYear()){
+                bookingTrackerRepository.delete(n);
+            }
+        }
+
 
         int numberOfDays = (bookDto.getBookedEndDate().getDayOfYear() - bookDto.getBookedStartDate().getDayOfYear())+1;
 
@@ -100,14 +110,21 @@ public class HotelServiceImpl implements HotelService {
         booked.setBookedStartDate(bookDto.getBookedStartDate());
         booked.setBookedEndDate(bookDto.getBookedEndDate());
         booked.setReservationNumber(bookDto.getReservationNumber());
+        booked.setBookedDate(LocalDate.now());
         bookedRepository.save(booked);
-        return "Booking was successfully.\n Keep your reservation number: "+ bookDto.getReservationNumber();
+        return "Booking was successful.\n Keep your reservation number: "+ bookDto.getReservationNumber();
 
     }
 
     @Override
     public List<Room> getAvailableRooms() {
         return roomRepository.fetchAllRoom();
+    }
+
+
+    @Override
+    public Booked getRoom(String reservationNumber) {
+        return bookedRepository.findByReservationNumber(reservationNumber);
     }
 
 
