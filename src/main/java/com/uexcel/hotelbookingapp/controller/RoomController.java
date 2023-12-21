@@ -52,7 +52,7 @@ public class RoomController {
     @PostMapping("/booking")
     public String saveBooking(@ModelAttribute("book") BookDto bookDto, Model model,@RequestParam("room_no") String string){
         bookDto.setRoomNumber(string);
-       String message= hotelService.saveBooking(bookDto);
+       String message= hotelService.saveBooking(bookDto, null);
        if(!message.contains("reservation")) {
            model.addAttribute("error", message);
            return "bookingPage";

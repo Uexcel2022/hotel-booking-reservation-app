@@ -28,6 +28,7 @@
                 <td>
 
                     <a th:href="@{/booking(room_no=${rooms.roomNumber})}" class="btn btn-primary">Book</a>
+                    <a th:href="@{/book_checkin(room_no=${rooms.roomNumber})}" class="btn btn-primary">Book-checkin</a>
 <!--                    <a class="btn btn-danger" th:if="${user.role=='ADMIN'}">Delete</a>-->
 <!--                    <a class="btn btn-primary" th:unless="${user.role=='ADMIN'}">View</a>-->
                 </td>

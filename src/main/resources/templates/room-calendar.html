@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <title>room_calendar</title>
+  <style>
+
+    .back-btn{
+      text-align: center;
+    }
+
+    .error{
+      color: red;
+      font-weight: bold;
+    }
+    .room{
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <h1 >Booked Days</h1>
+    <p class="room">Room Number: [[${roomNumber}]]</p>
+    <br>
+    <table class="table">
+      <thead>
+      <tr>
+        <th>Date</th>
+        <th>WeekDay</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="info:${calendar}">
+        <td th:text="${info.bookedDate}"></td>
+        <td th:text="${info.weekDays}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<br>
+<br>
+<br>
+<p class="back-btn"><a th:href="@{/rooms}" class="btn btn-primary">Back</a></p>
+</body>
+</html>

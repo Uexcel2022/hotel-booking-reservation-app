@@ -1,20 +1,27 @@
 package com.uexcel.hotelbookingapp.controller;
 
+import ch.qos.logback.core.CoreConstants;
+import com.uexcel.hotelbookingapp.dto.BookDto;
+import com.uexcel.hotelbookingapp.dto.RoomCalenderModel;
 import com.uexcel.hotelbookingapp.entity.Booked;
 import com.uexcel.hotelbookingapp.entity.Room;
 import com.uexcel.hotelbookingapp.repository.BookedRepository;
 import com.uexcel.hotelbookingapp.repository.RoomRepository;
 import com.uexcel.hotelbookingapp.service.HotelService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class UpdateDeleteController {
@@ -35,7 +42,8 @@ public class UpdateDeleteController {
     }
 
     @PostMapping("/booked-room")
-    public String getBookedRoom(@RequestParam("reservationNumber") String reservationNumber, Model model){
+    public String getBookedRoom(
+            @RequestParam("reservationNumber") String reservationNumber, Model model){
         Booked booked = hotelService.getRoom(reservationNumber);
         if(booked != null) {
             model.addAttribute("bookedInfo", booked);
@@ -46,22 +54,42 @@ public class UpdateDeleteController {
     }
 
     @GetMapping("/checked_in")
-    public String checkin(@RequestParam("reservationNumber") String bookedNumber){
+    public String checkin(
+            @RequestParam("reservationNumber") String reservationNumber, Model model,HttpServletResponse response){
 
-        Booked booked = hotelService.getRoom(bookedNumber);
-        booked.setCheckIn("check_in");
-        booked.setCheckInDate(LocalDate.now());
+        Booked booked = getBookedRoms(reservationNumber);
+        if(booked != null && (
+                booked.getBookedStartDate().getDayOfYear() > LocalDate.now().getDayOfYear() ||
+                        booked.getBookedDate().getDayOfYear() < LocalDate.now().getDayOfYear()
+        )){
+            model.addAttribute("error", "The check in date is not within your booked dates");
+            model.addAttribute("bookedInfo", booked);
+            return "reservation";
+        }
 
         Room room = roomrepository.findByRoomNumber(booked.getRoom().getRoomNumber());
+
+        if(room.getStatus().equals("occupied")){
+            model.addAttribute("error", "The room is still occupied");
+            model.addAttribute("bookedInfo", booked);
+            return "reservation";
+        }
+
+        booked.setCheckIn("check_in");
+        booked.setCheckInDate(LocalDate.now());
         room.setStatus("occupied");
         booked.setRoom(room);
         bookedRepository.save(booked);
+
+        model.addAttribute("bookedInfo", booked);
         return "reservation";
     }
 
     @GetMapping("/reservations")
-    public String getReservations(Model model){
+    public String getReservations(Model model, @RequestParam("check_in") Optional<String> string){
         List<Booked> bookedList = hotelService.getAllBookedRoom();
+        String paramVariable = string.orElse("");
+        model.addAttribute("error",paramVariable);
         model.addAttribute("bookedInfo",bookedList);
         return "reservations";
 
@@ -73,5 +101,87 @@ public class UpdateDeleteController {
             HttpServletResponse response) throws IOException {
         hotelService.deleteReservation(reservationNumber);
         response.sendRedirect("/reservations");
+    }
+
+    @GetMapping("/checkout")
+    public void checkout(
+            @RequestParam("reservationNumber") String reservationNumber,
+            HttpServletResponse response, Model model) throws IOException {
+
+        Booked booked = getBookedRoms(reservationNumber);
+
+        if(booked.getCheckIn() == null) {
+            response.sendRedirect("/reservations?check_in=Status: Room not checked in!");
+            return;
+        }
+
+
+        booked.setCheckOutDate(LocalDate.now());
+
+        Room room = roomrepository.findByRoomNumber(booked.getRoom().getRoomNumber());
+        room.setStatus("available");
+        booked.setRoom(room);
+        bookedRepository.save(booked);
+
+        model.addAttribute("bookedInfo", booked);
+
+        response.sendRedirect("/reservations");
+    }
+
+
+    @GetMapping("/room_calendar")
+    public String getRoomNumber(){
+        return "room-number";
+    }
+
+    @GetMapping("/calendar")
+    public String roomsCalender(@RequestParam("room_number") String roomNumber, Model model){
+        List<RoomCalenderModel> roomCalenderModelList = hotelService.getRoomBookedDates(roomNumber);
+        if(!roomCalenderModelList.isEmpty()) {
+            model.addAttribute("calendar", roomCalenderModelList);
+            model.addAttribute("roomNumber", roomCalenderModelList.get(0).getRoomNumber());
+            return "room-calendar";
+        }
+
+        Room room = roomrepository.findByRoomNumber(roomNumber);
+        if(room == null) {
+            model.addAttribute("error", "The room number is invalid");
+            return "room-number";
+        }
+
+        model.addAttribute("notBooked", "The room is not booked");
+        return "room-number";
+    }
+
+    @GetMapping("book_checkin")
+    public String getBookCheckinPage(
+            @ModelAttribute("book")BookDto bookDto, Model model,
+            @RequestParam("room_no") String roomNumber, @RequestParam("error") Optional<String> msg){
+        bookDto.setRoomNumber(roomNumber);
+        model.addAttribute("book", bookDto);
+        String paramVariable = msg.orElse("");
+        model.addAttribute("error", paramVariable);
+        return "book_checkin_page";
+    }
+
+    @PostMapping("book_checkin")
+    public void saveBookCheckinPage(
+            @RequestParam("room_no") String roomNumber,
+            @ModelAttribute("book") BookDto bookDto,
+            HttpServletResponse response, HttpServletRequest request
+     ) throws IOException {
+
+        bookDto.setRoomNumber(roomNumber);
+       String msg = hotelService.saveBookCheckin(bookDto);
+       if(msg.contains("successful")) {
+           response.sendRedirect("/reservations");
+           return;
+       }
+       response.sendRedirect("/book_checkin?error="+msg+"&room_no="+roomNumber);
+    }
+
+
+    private  Booked getBookedRoms(String reservationNumber){
+     return  hotelService.getRoom(reservationNumber);
     }
 }

@@ -4,6 +4,7 @@ import com.uexcel.hotelbookingapp.entity.Booked;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNullApi;
 
 import java.awt.print.Book;
 import java.time.LocalDate;
@@ -24,8 +25,8 @@ public interface BookedRepository extends JpaRepository<Booked,Long> {
     )
     Booked getLastBooking(@Param("roomNumber") String roomNumber);
 
-    @Override
-    List<Booked> findAll();
+    @Query("SELECT p FROM Booked p")
+    List<Booked> fetchAll();
 
 }
 

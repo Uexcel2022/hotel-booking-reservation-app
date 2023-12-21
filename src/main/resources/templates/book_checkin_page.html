@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e2123;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #booking-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+
+        h2 {
+            color: #0e2433;
+        }
+
+        p {
+            color: rgba(84, 86, 86, 0.83);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+            color: #125e8f;
+            font-weight: bold;
+            text-align: left;
+        }
+
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #125e8f;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0e2433;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            color: #fff;
+        }
+
+        .success {
+            background-color: #45b6fe;
+        }
+
+        .error {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body  >
+
+<div id="booking-form">
+    <div class="message error" th:if="${error != null}">[[${error}]]</div>
+    <h2>BooK-Check-in Customer</h2>
+    <form method="post" role="form" th:action="@{/book_checkin(room_no=${book.roomNumber})}" th:object="${book}">
+
+        <p th:text="${'Room number: '+book.roomNumber}"></p>
+
+        <label for="bookedStartDate">Booked Start Date</label>
+        <input th:field="*{bookedStartDate}"  type="date" id="bookedStartDate" name="bookedStartDate" required>
+        <label for="bookedEndDate">Booked End Date</label>
+        <input th:field="*{bookedEndDate}"  type="date" id="bookedEndDate" name="bookedEndDate" required>
+
+        <label for="firstName">First name</label>
+        <input th:field="*{firstName}"  type="text" id="firstName" name="firstName" required placeholder="First name">
+
+        <label for="lastName">Last name:</label>
+        <input th:field="*{lastName}"  type="text" id="lastName" name="lastName" required placeholder="Last name">
+
+        <button type="submit">Book-Check-In</button>
+    </form>
+
+</div>
+
+<script>
+    document.getElementById('form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        // Add your registration logic here
+        // For demo purposes, we'll show a success message
+        document.querySelector('.message.success').style.display = 'block';
+        document.querySelector('.message.error').style.display = 'none';
+    });
+</script>
+
+</body>
+</html>

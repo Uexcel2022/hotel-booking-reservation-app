@@ -13,16 +13,26 @@
             color: #e74c3c;
             font-weight: bold;
         }
-        strong{
+        strong {
             color: #5b5b0c;
+        }
+        .cancel{
+            text-align: center;
+        }
+
+        .error{
+            color: red;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="row">
-        <h1>Reservations</h1>
-        <p>You may wish to delete any record. <strong>NOTE!</strong> <span>Information deleted can never be recovered!!!</span></p>
+        <h1 class="cancel">Reservations</h1>
+        <p class="cancel">You may wish to delete any record. <strong>NOTE!</strong> <span>Information deleted can never be recovered!!!</span></p>
+        <br>
+        <p class="error" th:if="${!error.empty}">[[${error}]]</p>
         <table class="table">
             <thead>
             <tr>
@@ -51,16 +61,21 @@
 
                 <td>
 
+                    <a th:href="@{/checkout(reservationNumber=${info.reservationNumber})}"
+                       class="btn btn-primary">Check out</a>
+
                     <a th:href="@{/delete(reservationNumber=${info.reservationNumber})}"
                        class="btn btn-danger">Delete</a>
-                    <a th:href="@{/rooms}" class="btn btn-primary">Cancel</a>
-
                 </td>
             </tr>
             </tbody>
         </table>
+
     </div>
 </div>
-
+<br>
+<br>
+<br>
+<p class="cancel"><a th:href="@{/rooms}" class="btn btn-primary">Cancel</a></p>
 </body>
 </html>

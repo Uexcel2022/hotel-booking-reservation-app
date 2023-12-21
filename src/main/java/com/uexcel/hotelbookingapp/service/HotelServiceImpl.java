@@ -1,6 +1,7 @@
 package com.uexcel.hotelbookingapp.service;
 
 import com.uexcel.hotelbookingapp.dto.BookDto;
+import com.uexcel.hotelbookingapp.dto.RoomCalenderModel;
 import com.uexcel.hotelbookingapp.dto.RoomDto;
 import com.uexcel.hotelbookingapp.entity.Booked;
 import com.uexcel.hotelbookingapp.entity.BookingTracker;
@@ -39,7 +40,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public String saveBooking(BookDto bookDto) {
+    public String saveBooking(BookDto bookDto, String checkin) {
 
         if(bookDto.getBookedStartDate().getYear() < LocalDate.now().getYear()){
             return "Invalid year. The year "+ bookDto.getBookedStartDate().getYear() + " is in the past";
@@ -63,7 +64,6 @@ public class HotelServiceImpl implements HotelService {
 
         }
         Booked obj = bookedRepository.getLastBooking(bookDto.getRoomNumber());
-        System.out.println("************* "+ obj);
         if(room.getStatus().equals("occupied") && obj != null &&
                 obj.getBookedEndDate().getDayOfYear() > bookDto.getBookedStartDate().getDayOfYear()){
             return  "Status: failed!!\nThe room is not available for booking on the date(s) you selected!";
@@ -104,8 +104,15 @@ public class HotelServiceImpl implements HotelService {
 
         }
 
-
         Booked booked = new Booked();
+        if(checkin != null){
+            Room rm = new Room();
+            room.setStatus("occupied");
+           booked.setCheckIn(checkin);
+           booked.setCheckInDate(LocalDate.now());
+           booked.setRoom(rm);
+        }
+
         booked.setFirstName(bookDto.getFirstName());
         booked.setRoom(room);
         booked.setLastName(bookDto.getLastName());
@@ -131,19 +138,52 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public List<Booked> getAllBookedRoom() {
-        return bookedRepository.findAll();
+        return bookedRepository.fetchAll();
+
     }
 
     @Override
-    public String deleteReservation(String reservationNumber) {
+    public void deleteReservation(String reservationNumber) {
         Booked booked = bookedRepository.findByReservationNumber(reservationNumber);
         if(booked ==null){
-            return "Invalid reservation number";
+            return;
         }
         deleteBookingTracker(booked.getBookedStartDate(), booked.getBookedEndDate(), booked.getRoom().getRoomNumber());
         bookedRepository.delete(booked);
-        return reservationNumber;
     }
+
+    @Override
+    public void checkout(String reservationNumber) {
+
+
+
+    }
+
+    @Override
+    public List<RoomCalenderModel> getRoomBookedDates(String roomNumber) {
+        List<BookingTracker> bookingTracker =
+                bookingTrackerRepository.findByRoomNumber(roomNumber);
+        List<RoomCalenderModel> roomCalenderModelList = new ArrayList<>();
+        if(!bookingTracker.isEmpty()){
+            for(BookingTracker n: bookingTracker){
+                LocalDate bookDate =
+                        LocalDate.ofYearDay(LocalDate.now().getYear(),n.getDayOfYear());
+                roomCalenderModelList.add(
+                        new RoomCalenderModel(roomNumber, bookDate, bookDate.getDayOfWeek().toString())
+                );
+            }
+            return roomCalenderModelList;
+        }
+
+        return roomCalenderModelList;
+    }
+
+    @Override
+    public String saveBookCheckin(BookDto bookDto) {
+        String checkin = "check_in";
+        return saveBooking(bookDto, checkin);
+    }
+
 
     private void deleteBookingTracker(LocalDate bookedStartDate, LocalDate bookedEndDate, String roomNumber) {
         int numberOfDays = bookedEndDate.getDayOfYear() - bookedStartDate.getDayOfYear() +1;
