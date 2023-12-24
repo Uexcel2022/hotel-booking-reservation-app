@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reservation Number Form</title>
+    <title>Registration Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
             height: 100vh;
         }
 
-        #add-room-form {
+        #registration-form {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
@@ -29,6 +29,10 @@
             color: #0e2433;
         }
 
+        p {
+            color: rgba(84, 86, 86, 0.83);
+        }
+
         label {
             display: block;
             margin: 10px 0 5px;
@@ -36,6 +40,7 @@
             font-weight: bold;
             text-align: left;
         }
+
 
         input {
             width: 100%;
@@ -71,18 +76,28 @@
         .error {
             background-color: #e74c3c;
         }
+
+        .inline {
+            display: inline;
+            margin: 10px 0 5px;
+            color: #125e8f;
+            font-weight: bold;
+            text-align: left;
+            width: auto;
+        }
     </style>
 </head>
 <body>
 
-<div id="add-room-form">
+<div id="registration-form">
+    <h2>Registration</h2>
     <div class="message error" th:if="${error != null}">[[${error}]]</div>
-    <div class="message success" th:if="${notBooked != null}">[[${notBooked}]]</div>
-    <!--    <div class="message error" style="display: none;">Registration failed. Please try again.</div>-->
-    <h2>Checking Booking</h2>
-    <form method="get" role="form" th:action="@{/calendar}" >
-        <label for="roomNumber">Booked Number:</label>
-        <input type="text" id="roomNumber" name="room_number" required placeholder="Enter room number">
+    <div class="message success" th:if="${success != null}">[[${success}]]</div>
+    <form th:if="${success == null}" method="post" role="form" th:action="@{/register}" th:object="${reg}">
+        <label for="email">Email</label>
+        <input th:field="*{email}"  type="email" id="email" name="email" required placeholder="Enter your email">
+        <label for="password">Password</label>
+        <input th:field="*{password}"  type="password" id="password" name="password" required placeholder="Enter password">
         <button type="submit">Submit</button>
     </form>
 

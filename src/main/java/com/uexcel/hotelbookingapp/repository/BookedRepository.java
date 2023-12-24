@@ -4,9 +4,7 @@ import com.uexcel.hotelbookingapp.entity.Booked;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.lang.NonNullApi;
 
-import java.awt.print.Book;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,9 +23,16 @@ public interface BookedRepository extends JpaRepository<Booked,Long> {
     )
     Booked getLastBooking(@Param("roomNumber") String roomNumber);
 
-    @Query("SELECT p FROM Booked p")
+    @Query("SELECT p FROM Booked p WHERE p.checkOutDate is null")
     List<Booked> fetchAll();
 
+    @Query("SELECT p FROM Booked p WHERE p.checkOutDate is not null and p.checkInDate is not null")
+    List<Booked> getRoomsUsage();
+
+    @Query( nativeQuery = true, value =
+            "SELECT reservation_number FROM booked  WHERE room_number =:roomNumber " +
+                    "and check_in is not null and check_out_date is null")
+    String findReservationNumber(@Param("roomNumber") String roomNumber);
 }
 
 //if endDate is below any startDate and the

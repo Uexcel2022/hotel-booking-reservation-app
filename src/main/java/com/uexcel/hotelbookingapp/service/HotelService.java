@@ -1,6 +1,7 @@
 package com.uexcel.hotelbookingapp.service;
 
 import com.uexcel.hotelbookingapp.dto.BookDto;
+import com.uexcel.hotelbookingapp.dto.RegDto;
 import com.uexcel.hotelbookingapp.dto.RoomCalenderModel;
 import com.uexcel.hotelbookingapp.dto.RoomDto;
 import com.uexcel.hotelbookingapp.entity.Booked;
@@ -28,4 +29,7 @@ public interface HotelService {
 
     String saveBookCheckin(BookDto roomNumber);
 
+    void saveUSer(RegDto regDto);
+
+    List<Booked> getRoomUsage();
 }

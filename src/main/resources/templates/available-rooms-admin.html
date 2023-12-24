@@ -15,9 +15,6 @@
             color: red;
             font-weight: bold;
         }
-        .admin{
-            text-align: center;
-        }
     </style>
 </head>
 <body>
@@ -41,17 +38,17 @@
 
                 <td>
 
-                    <a th:href="@{/calendar(room_no=${rooms.roomNumber})}"
-                       class="btn btn-primary">Room Calendar</a>
-
                     <a th:href="@{/booking(room_no=${rooms.roomNumber})}"
                        class="btn btn-primary">Book</a>
 
-                    <a th:if="${admin != null}" th:href="@{/book_checkin(room_no=${rooms.roomNumber})}"
+                    <a th:href="@{/book_checkin(room_no=${rooms.roomNumber})}"
                        class="btn btn-primary">Book-checkin</a>
 
-                    <a th:if="${admin != null}" th:href="@{/check_out(room_no=${rooms.roomNumber})}"
-                       class="btn btn-danger">Checkout</a>
+                    <a th:href="@{/check_out(room_no=${rooms.roomNumber})}"
+                       class="btn btn-primary">Checkout</a>
+
+                    <a th:href="@{/calendar(room_no=${rooms.roomNumber})}"
+                       class="btn btn-primary">Room Calendar</a>
 
                 </td>
             </tr>
@@ -59,7 +56,6 @@
         </table>
     </div>
 </div>
-<p class="admin"><a  th:if="${admin != null}" th:href="@{/admin}" class="btn btn-primary">Cancel</a></p>
-<p class="admin"><a th:if="${user != null}" th:href="@{/user}" class="btn btn-primary">Cancel</a></p>
+
 </body>
 </html>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <title>Reservations</title>
+    <title>room usage</title>
     <style>
         span{
             color: #e74c3c;
@@ -29,10 +29,8 @@
 <body>
 <div class="container">
     <div class="row">
-        <h1 class="cancel">Reservations</h1>
-        <p class="cancel">You may wish to delete any record. <strong>NOTE!</strong> <span>Information deleted can never be recovered!!!</span></p>
+        <h1 class="cancel">Room Usage</h1>
         <br>
-        <p class="error" th:if="${!error.empty}">[[${error}]]</p>
         <table class="table">
             <thead>
             <tr>
@@ -59,23 +57,6 @@
                 <td th:text="${info.getCheckInDate()}"></td>
                 <td th:text="${info.getCheckOutDate}"></td>
 
-                <td>
-                    <a th:href="@{/checkin(reservationNumber=${info.reservationNumber})}"
-                       class="btn btn-primary">Checkin</a>
-
-                </td>
-                <td>
-                    <a th:href="@{/checkout(reservationNumber=${info.reservationNumber})}"
-                       class="btn btn-primary">Checkout</a>
-
-                </td>
-                <td>
-
-                    <a th:href="@{/delete(reservationNumber=${info.reservationNumber})}"
-                       class="btn btn-danger">Delete</a>
-                </td>
-
-            </tr>
             </tbody>
         </table>
 

@@ -1,15 +1,15 @@
 package com.uexcel.hotelbookingapp.service;
 
 import com.uexcel.hotelbookingapp.dto.BookDto;
+import com.uexcel.hotelbookingapp.dto.RegDto;
 import com.uexcel.hotelbookingapp.dto.RoomCalenderModel;
 import com.uexcel.hotelbookingapp.dto.RoomDto;
-import com.uexcel.hotelbookingapp.entity.Booked;
-import com.uexcel.hotelbookingapp.entity.BookingTracker;
-import com.uexcel.hotelbookingapp.entity.BookingTrackerIdClass;
-import com.uexcel.hotelbookingapp.entity.Room;
+import com.uexcel.hotelbookingapp.entity.*;
 import com.uexcel.hotelbookingapp.repository.BookedRepository;
 import com.uexcel.hotelbookingapp.repository.BookingTrackerRepository;
+import com.uexcel.hotelbookingapp.repository.LoginCredentialsRepository;
 import com.uexcel.hotelbookingapp.repository.RoomRepository;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -19,15 +19,18 @@ import java.util.*;
 public class HotelServiceImpl implements HotelService {
     private final RoomRepository roomRepository;
     private final BookedRepository bookedRepository;
-
     private  final BookingTrackerRepository bookingTrackerRepository;
+
+    private final LoginCredentialsRepository loginCredentialsRepository;
 
     public HotelServiceImpl(RoomRepository roomRepository,
                             BookedRepository bookedRepository,
-                            BookingTrackerRepository bookingTrackerRepository) {
+                            BookingTrackerRepository bookingTrackerRepository,
+                            LoginCredentialsRepository loginCredentialsRepository) {
         this.roomRepository = roomRepository;
         this.bookedRepository = bookedRepository;
         this.bookingTrackerRepository = bookingTrackerRepository;
+        this.loginCredentialsRepository = loginCredentialsRepository;
     }
 
     @Override
@@ -105,10 +108,10 @@ public class HotelServiceImpl implements HotelService {
         }
 
         Booked booked = new Booked();
-        if(checkin != null){
+        if(checkin != null || bookDto.isCheckin()){
             Room rm = new Room();
             room.setStatus("occupied");
-           booked.setCheckIn(checkin);
+           booked.setCheckIn("check_in");
            booked.setCheckInDate(LocalDate.now());
            booked.setRoom(rm);
         }
@@ -155,8 +158,6 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void checkout(String reservationNumber) {
 
-
-
     }
 
     @Override
@@ -182,6 +183,21 @@ public class HotelServiceImpl implements HotelService {
     public String saveBookCheckin(BookDto bookDto) {
         String checkin = "check_in";
         return saveBooking(bookDto, checkin);
+    }
+
+    @Override
+    public void saveUSer(RegDto regDto) {
+        LoginCredentials loginCredentials = new LoginCredentials();
+        loginCredentials.setEmail(regDto.getEmail());
+        loginCredentials.setRole("user");
+        loginCredentials.setPassword(new BCryptPasswordEncoder(11)
+                .encode(regDto.getPassword()));
+        loginCredentialsRepository.save(loginCredentials);
+    }
+
+    @Override
+    public List<Booked> getRoomUsage() {
+        return bookedRepository.getRoomsUsage();
     }
 
 

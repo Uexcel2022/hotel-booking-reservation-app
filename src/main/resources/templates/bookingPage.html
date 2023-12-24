@@ -76,6 +76,15 @@
         .error {
             background-color: #e74c3c;
         }
+
+        .inline {
+            display: inline;
+            margin: 10px 0 5px;
+            color: #125e8f;
+            font-weight: bold;
+            text-align: left;
+            width: auto;
+        }
     </style>
 </head>
 <body>
@@ -99,6 +108,16 @@
 
         <label for="lastName">Last name:</label>
         <input th:field="*{lastName}"  type="text" id="lastName" name="lastName" required placeholder="Last name">
+
+<!--        <br>-->
+<!--        <br>-->
+
+<!--        <input  th:field="*{checkin}" class="inline"  type="checkbox" id="check_in" name="checkin">-->
+<!--        <label class="inline" for="check_in">Check in?</label>-->
+
+        <br>
+        <br>
+        <br>
 
         <button type="submit">Book</button>
     </form>

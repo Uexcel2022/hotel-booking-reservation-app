@@ -81,8 +81,8 @@
 <body  >
 
 <div id="booking-form">
-    <div class="message error" th:if="${error != null}">[[${error}]]</div>
     <h2>BooK-Check-in Customer</h2>
+    <div class="message error" th:if="${!error.empty}">[[${error}]]</div>
     <form method="post" role="form" th:action="@{/book_checkin(room_no=${book.roomNumber})}" th:object="${book}">
 
         <p th:text="${'Room number: '+book.roomNumber}"></p>

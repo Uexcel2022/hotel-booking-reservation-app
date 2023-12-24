@@ -14,5 +14,6 @@ public class BookDto {
     private String lastName;
     private LocalDate bookedStartDate;
     private LocalDate bookedEndDate;
+    private boolean checkin;
     private String reservationNumber = UUID.randomUUID().toString();
 }

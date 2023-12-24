@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sc="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" th:href="@{../dashboard.css}">
+</head>
+<body>
+
+<div id="sidebar">
+  <div class="header">Admin Dashboard</div>
+  <a href="/add-room">Add room</a>
+  <a href="/reservations">Reservations</a>
+  <a href="/room-admin">Bookings</a>
+  <a href="/booked-room">Checking booking</a>
+  <a href="/room-usage">Room usage</a>
+
+<!--  <span sec:authorize="isAuthenticated">-->
+<!--  <a th:href="@{/logout}">Logout</a>-->
+<!--    </span>-->
+</div>
+
+<div id="content">
+  <div class="header">Dashboard</div>
+  <div class="main-content">
+    <!-- Your main content goes here -->
+    <p>Welcome, [[${name}]]!</p>
+  </div>
+</div>
+
+</body>
+</html>

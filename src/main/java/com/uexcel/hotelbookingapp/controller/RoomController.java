@@ -4,6 +4,8 @@ import com.uexcel.hotelbookingapp.dto.BookDto;
 import com.uexcel.hotelbookingapp.dto.RoomDto;
 import com.uexcel.hotelbookingapp.entity.Room;
 import com.uexcel.hotelbookingapp.service.HotelService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +23,48 @@ public class RoomController {
         this.hotelService = hotelService;
     }
 
+    @GetMapping("/user")
+    public String user(){
+        return "userPage";
+    }
+
+    @GetMapping("/admin")
+    public String admin(){
+        return "adminPage";
+    }
+
     @GetMapping("/rooms")
-    public String getRoom(Model model){
+    public String getRoom(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String calendarError = (String) session.getAttribute("calendar_error");
+
         List<Room> rooms = hotelService.getAvailableRooms();
         if(rooms.isEmpty()){
             model.addAttribute("rooms","There no room is available!!!");
             return "noRoomAvailable";
         }
         model.addAttribute("rooms",rooms);
+        model.addAttribute("user","user");
+        model.addAttribute("calendarError", calendarError);
         return "availableRooms";
     }
+
+    @GetMapping("/room-admin")
+    public String getRoomAmin(Model model, HttpServletRequest request){
+        HttpSession session = request.getSession();
+        String calendarError = (String) session.getAttribute("calendar_error");
+
+        List<Room> rooms = hotelService.getAvailableRooms();
+        if(rooms.isEmpty()){
+            model.addAttribute("rooms","There no room is available!!!");
+            return "noRoomAvailable";
+        }
+        model.addAttribute("rooms",rooms);
+        model.addAttribute("admin","admin");
+        model.addAttribute("calendarError", calendarError);
+        return "availableRooms";
+    }
+
 
     @GetMapping("/add-room")
     public String getAddRoomPage(@ModelAttribute("room") RoomDto roomDto){
