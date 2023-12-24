@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -39,7 +41,11 @@ private final CustomUserDetailsService customUserDetailsService;
                         .requestMatchers("/room-usage").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(form->form.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/admin").permitAll());
+                .formLogin(form->form.loginPage("/login").loginProcessingUrl("/login").defaultSuccessUrl("/admin").permitAll())
+                .logout(form -> form.logoutSuccessUrl("/login").invalidateHttpSession(true).clearAuthentication(true)
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/login?logout").permitAll());
+
+
 
         return http.build();
     }
